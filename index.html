@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>replit</title>
+  <link href="style.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  
+      <img src="scrnli_8_21_2024_3-36-45 PM.png" alt="Company Logo" class="logo">
+      
+  </body>
+  </html>
+  <script src="script.js"></script>
+</body>
+
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Timesheet</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input[type="time"], input[type="number"], input[type="date"] {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .signature-section {
+            margin-top: 20px;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            margin-top: 20px;
+            padding-top: 5px;
+        }
+        .pay-period {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .pay-period label {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Employee Daily Time Record</h1>
+    <div class="pay-period">
+        <div>
+            <label for="periodFrom">Pay Period From:</label>
+            <input type="date" id="periodFrom">
+        </div>
+        <div>
+            <label for="periodTo">To:</label>
+            <input type="date" id="periodTo">
+        </div>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Day</th>
+                <th>Date</th>
+                <th>Job Description</th>
+                <th>Time In</th>
+                <th>Time Out</th>
+                <th>Total Hours</th>
+            </tr>
+        </thead>
+        <tbody id="timesheet-body">
+            <!-- Table rows will be dynamically generated here -->
+        </tbody>
+    </table>
+
+    <div>
+        <strong>Grand Total:</strong> <input type="number" id="grandTotal" step="0.01" min="0" readonly>
+    </div>
+
+    <div class="signature-section">
+        <p>
+            <strong>Print Name:</strong> ________________________________
+            <strong>Approved by:</strong> ________________________________
+        </p>
+        <p class="signature-line">Employee Signature</p>
+        <p>
+            <strong>Date:</strong> ________________
+            <strong>Approved by:</strong> ________________________________
+        </p>
+        <p class="signature-line">Supervisor for Subbing</p>
+    </div>
+
+    <script>
+        function getDayName(date) {
+            return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][date.getDay()];
+        }
+
+        function updateTimesheet() {
+            const fromDate = new Date(document.getElementById('periodFrom').value);
+            const toDate = new Date(document.getElementById('periodTo').value);
+            const tbody = document.getElementById('timesheet-body');
+            tbody.innerHTML = '';
+
+            for (let d = new Date(fromDate); d <= toDate; d.setDate(d.getDate() + 1)) {
+                const row = tbody.insertRow();
+                row.insertCell(0).textContent = getDayName(d);
+
+                const dateCell = row.insertCell(1);
+                const dateInput = document.createElement('input');
+                dateInput.type = 'date';
+                dateInput.value = d.toISOString().split('T')[0];
+                dateCell.appendChild(dateInput);
+
+                row.insertCell(2).innerHTML = '<input type="text" placeholder="Enter job description">';
+                row.insertCell(3).innerHTML = '<input type="time">';
+                row.insertCell(4).innerHTML = '<input type="time">';
+                row.insertCell(5).innerHTML = '<input type="number" step="0.01" min="0">';
+            }
+        }
+
+        document.getElementById('periodFrom').addEventListener('change', updateTimesheet);
+        document.getElementById('periodTo').addEventListener('change', updateTimesheet);
+
+        document.addEventListener('input', function(e) {
+            if (e.target.type === 'number' && e.target.parentNode.tagName === 'TD') {
+                updateGrandTotal();
+            }
+        });
+
+        function updateGrandTotal() {
+            const totalInputs = document.querySelectorAll('tbody input[type="number"]');
+            let grandTotal = 0;
+            totalInputs.forEach(input => {
+                grandTotal += parseFloat(input.value) || 0;
+            });
+            document.getElementById('grandTotal').value = grandTotal.toFixed(2);
+        }
+
+        // Initialize the timesheet with default dates
+        const today = new Date();
+        const twoWeeksLater = new Date(today);
+        twoWeeksLater.setDate(today.getDate() + 13);
+
+        document.getElementById('periodFrom').value = today.toISOString().split('T')[0];
+        document.getElementById('periodTo').value = twoWeeksLater.toISOString().split('T')[0];
+
+        updateTimesheet();
+    </script>
+</body>
+</html>
